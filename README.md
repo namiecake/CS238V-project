@@ -71,7 +71,7 @@ python compare_results.py
 
 Each threshold produces separate cache files, models, and results (e.g., `ctg_features_ph715.pkl` vs `ctg_features_ph705.pkl`), so nothing is overwritten.
 
-**Tip:** For long runs, use unbuffered output so you can monitor progress:
+For long runs, use unbuffered output so you can monitor progress:
 ```bash
 caffeinate -s env PYTHONUNBUFFERED=1 python run_all.py 2>&1 | tee run_all.log
 ```
