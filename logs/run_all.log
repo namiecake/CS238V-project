@@ -1,0 +1,1290 @@
+
+######################################################################
+#  PIPELINE — pH threshold = 7.15
+######################################################################
+
+======================================================================
+  /Users/namiecake/Desktop/cs238v/CS238V-project/.venv/bin/python /Users/namiecake/Desktop/cs238v/CS238V-project/load_data.py --ph-threshold 7.15
+======================================================================
+
+Loading cached data from /Users/namiecake/Desktop/cs238v/CS238V-project/data/ctg_features_ph715.pkl
+
+── Dataset Summary (threshold=7.15) ──
+Records: 506
+pH range: 6.87 – 7.47
+Normal (pH >= 7.15):      417
+Pathological (pH < 7.15): 89
+
+======================================================================
+  /Users/namiecake/Desktop/cs238v/CS238V-project/.venv/bin/python /Users/namiecake/Desktop/cs238v/CS238V-project/rf_classifier.py --ph-threshold 7.15
+======================================================================
+
+Loading data (pH threshold = 7.15)...
+Loading cached data from /Users/namiecake/Desktop/cs238v/CS238V-project/data/ctg_features_ph715.pkl
+Dataset: 506 samples, 16 features
+Class balance: 417 normal, 89 pathological
+
+============================================================
+Random Forest — 5-fold Stratified CV
+============================================================
+              precision    recall  f1-score   support
+
+      Normal       0.83      0.99      0.90       417
+Pathological       0.58      0.08      0.14        89
+
+    accuracy                           0.83       506
+   macro avg       0.71      0.53      0.52       506
+weighted avg       0.79      0.83      0.77       506
+
+AUC-ROC:     0.662
+Sensitivity: 0.079
+Specificity: 0.988
+Confusion Matrix:
+[[412   5]
+ [ 82   7]]
+
+Saved model to /Users/namiecake/Desktop/cs238v/CS238V-project/models/ctg_classifier_ph715.pkl
+Saved CV results to /Users/namiecake/Desktop/cs238v/CS238V-project/results/cv_results_ph715.pkl
+Saved ROC curve to /Users/namiecake/Desktop/cs238v/CS238V-project/plots/roc_curve_rf_ph715.png
+Saved feature importance to /Users/namiecake/Desktop/cs238v/CS238V-project/plots/feature_importance_rf_ph715.png
+
+======================================================================
+  /Users/namiecake/Desktop/cs238v/CS238V-project/.venv/bin/python /Users/namiecake/Desktop/cs238v/CS238V-project/cnn_classifier.py --ph-threshold 7.15
+======================================================================
+
+Loading data (pH threshold = 7.15)...
+Loading cached data from /Users/namiecake/Desktop/cs238v/CS238V-project/data/ctg_features_ph715.pkl
+Loading raw signals for CNN...
+Loading cached raw signals from /Users/namiecake/Desktop/cs238v/CS238V-project/data/ctg_raw_signals.pkl
+Loaded 506 recordings
+Class balance: 417 normal, 89 pathological
+
+============================================================
+1D CNN — 5-fold Stratified Cross-Validation
+============================================================
+Device: cpu
+
+  Fold 1/5
+    Epoch 10: loss=0.4113, acc=0.557
+    Epoch 20: loss=0.4034, acc=0.609
+
+  Fold 2/5
+    Epoch 10: loss=0.4757, acc=0.489
+    Epoch 20: loss=0.4226, acc=0.610
+
+  Fold 3/5
+    Epoch 10: loss=0.4825, acc=0.546
+    Epoch 20: loss=0.4273, acc=0.575
+
+  Fold 4/5
+    Epoch 10: loss=0.4340, acc=0.563
+    Epoch 20: loss=0.3928, acc=0.595
+
+  Fold 5/5
+    Epoch 10: loss=0.4182, acc=0.553
+    Epoch 20: loss=0.4155, acc=0.595
+
+============================================================
+CNN RESULTS
+============================================================
+              precision    recall  f1-score   support
+
+      Normal       0.92      0.23      0.36       417
+Pathological       0.20      0.91      0.33        89
+
+    accuracy                           0.35       506
+   macro avg       0.56      0.57      0.35       506
+weighted avg       0.79      0.35      0.36       506
+
+AUC-ROC:     0.674
+Sensitivity: 0.910
+Specificity: 0.225
+Confusion Matrix:
+[[ 94 323]
+ [  8  81]]
+
+Saved CNN to /Users/namiecake/Desktop/cs238v/CS238V-project/models/cnn_classifier_ph715.pt
+Saved ROC curve to /Users/namiecake/Desktop/cs238v/CS238V-project/plots/roc_curve_cnn_ph715.png
+
+======================================================================
+  /Users/namiecake/Desktop/cs238v/CS238V-project/.venv/bin/python /Users/namiecake/Desktop/cs238v/CS238V-project/falsification.py rf --ph-threshold 7.15
+======================================================================
+
+Loading cached data from /Users/namiecake/Desktop/cs238v/CS238V-project/data/ctg_features_ph715.pkl
+Loading cached raw signals from /Users/namiecake/Desktop/cs238v/CS238V-project/data/ctg_raw_signals.pkl
+Loading Random Forest classifier...
+Model: RandomForest
+Records: 506
+pH threshold: 7.15
+
+======================================================================
+APPROACH 1: Searching real data for specification violations
+======================================================================
+
+  Record 1001 (pH=7.14, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1002 (pH=7.00, true=1): SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1003 (pH=7.20, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1004 (pH=7.30, true=0): OK
+
+  Record 1005 (pH=7.30, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1006 (pH=7.23, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1007 (pH=7.16, true=0): OK
+
+  Record 1008 (pH=7.36, true=0): OK
+
+  Record 1009 (pH=7.18, true=0): OK
+
+  Record 1010 (pH=7.35, true=0): OK
+
+  Record 1011 (pH=7.37, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1012 (pH=7.36, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1013 (pH=7.22, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1014 (pH=7.14, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1015 (pH=7.20, true=0): OK
+
+  Record 1016 (pH=7.32, true=0): OK
+
+  Record 1017 (pH=7.00, true=1): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1018 (pH=7.09, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1019 (pH=7.15, true=0): OK
+
+  Record 1020 (pH=7.37, true=0): OK
+
+  Record 1021 (pH=7.21, true=0): OK
+
+  Record 1022 (pH=7.28, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1023 (pH=7.30, true=0): SPEC2-VIOLATED(add_deceleration)
+
+  Record 1024 (pH=7.43, true=0): OK
+
+  Record 1025 (pH=7.34, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1026 (pH=7.27, true=0): OK
+
+  Record 1027 (pH=7.33, true=0): OK
+
+  Record 1028 (pH=7.25, true=0): SPEC1-VIOLATED
+
+  Record 1029 (pH=6.97, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1030 (pH=7.16, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1031 (pH=7.31, true=0): OK
+
+  Record 1032 (pH=7.30, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1033 (pH=7.32, true=0): OK
+
+  Record 1034 (pH=7.23, true=0): OK
+
+  Record 1035 (pH=7.28, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1036 (pH=7.08, true=1): SPEC1-VIOLATED SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1037 (pH=7.14, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1038 (pH=7.33, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1039 (pH=7.11, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration) SPEC3-VIOLATED(flip_rate=100%)
+
+  Record 1040 (pH=7.17, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1041 (pH=7.14, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1042 (pH=7.13, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1043 (pH=7.27, true=0): OK
+
+  Record 1044 (pH=6.92, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1045 (pH=7.26, true=0): SPEC1-VIOLATED
+
+  Record 1046 (pH=7.29, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1047 (pH=7.19, true=0): OK
+
+  Record 1048 (pH=7.20, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1049 (pH=7.24, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1050 (pH=7.29, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1051 (pH=7.25, true=0): OK
+
+  Record 1052 (pH=7.18, true=0): SPEC1-VIOLATED
+
+  Record 1053 (pH=7.35, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1054 (pH=7.19, true=0): SPEC2-VIOLATED(add_deceleration)
+
+  Record 1055 (pH=7.28, true=0): OK
+
+  Record 1056 (pH=7.32, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1057 (pH=7.27, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1058 (pH=7.05, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1059 (pH=7.15, true=0): OK
+
+  Record 1060 (pH=7.36, true=0): OK
+
+  Record 1061 (pH=7.22, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1062 (pH=7.13, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1063 (pH=7.16, true=0): OK
+
+  Record 1064 (pH=7.22, true=0): OK
+
+  Record 1065 (pH=7.13, true=1): SPEC2-VIOLATED(decrease_variability) SPEC3-VIOLATED(flip_rate=100%)
+
+  Record 1066 (pH=7.27, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1067 (pH=7.15, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1068 (pH=7.34, true=0): OK
+
+  Record 1069 (pH=7.33, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1070 (pH=6.92, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1071 (pH=6.98, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1072 (pH=7.29, true=0): OK
+
+  Record 1073 (pH=7.13, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1074 (pH=7.33, true=0): OK
+
+  Record 1075 (pH=7.14, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1076 (pH=7.21, true=0): OK
+
+  Record 1077 (pH=7.22, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1078 (pH=7.30, true=0): SPEC1-VIOLATED SPEC2-VIOLATED(add_deceleration)
+
+  Record 1079 (pH=7.17, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1080 (pH=7.16, true=0): OK
+
+  Record 1081 (pH=7.29, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1082 (pH=7.21, true=0): OK
+
+  Record 1083 (pH=7.29, true=0): OK
+
+  Record 1084 (pH=7.22, true=0): SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1085 (pH=7.13, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1086 (pH=7.25, true=0): OK
+
+  Record 1087 (pH=7.20, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1088 (pH=7.25, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1089 (pH=7.24, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1090 (pH=7.17, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1091 (pH=7.21, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1092 (pH=7.26, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1093 (pH=7.27, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1094 (pH=7.20, true=0): OK
+
+  Record 1095 (pH=7.35, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1096 (pH=7.27, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1097 (pH=7.18, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1098 (pH=7.30, true=0): OK
+
+  Record 1099 (pH=7.14, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1100 (pH=7.18, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1101 (pH=7.16, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1102 (pH=7.35, true=0): OK
+
+  Record 1103 (pH=7.31, true=0): OK
+
+  Record 1104 (pH=6.92, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1105 (pH=7.27, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1106 (pH=7.25, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1107 (pH=7.32, true=0): OK
+
+  Record 1108 (pH=7.02, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1109 (pH=7.30, true=0): SPEC1-VIOLATED SPEC2-VIOLATED(decrease_variability)
+
+  Record 1110 (pH=7.27, true=0): OK
+
+  Record 1111 (pH=7.24, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1112 (pH=7.19, true=0): OK
+
+  Record 1113 (pH=7.24, true=0): SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1114 (pH=7.24, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1115 (pH=7.13, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1116 (pH=7.24, true=0): SPEC2-VIOLATED(add_deceleration)
+
+  Record 1117 (pH=7.16, true=0): OK
+
+  Record 1118 (pH=7.09, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1119 (pH=7.34, true=0): OK
+
+  Record 1120 (pH=7.32, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1121 (pH=7.07, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1122 (pH=7.25, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1123 (pH=7.31, true=0): OK
+
+  Record 1124 (pH=7.26, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1125 (pH=7.25, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1126 (pH=7.18, true=0): OK
+
+  Record 1127 (pH=7.35, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1128 (pH=7.16, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1129 (pH=7.33, true=0): OK
+
+  Record 1130 (pH=7.10, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1131 (pH=7.33, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1132 (pH=7.22, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1133 (pH=7.13, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1134 (pH=7.27, true=0): SPEC2-VIOLATED(add_deceleration)
+
+  Record 1135 (pH=7.18, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1136 (pH=7.17, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1137 (pH=7.22, true=0): OK
+
+  Record 1138 (pH=7.16, true=0): SPEC2-VIOLATED(add_deceleration)
+
+  Record 1139 (pH=7.47, true=0): OK
+
+  Record 1140 (pH=7.18, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1141 (pH=7.31, true=0): OK
+
+  Record 1142 (pH=7.33, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1143 (pH=7.29, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1144 (pH=7.28, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1145 (pH=7.35, true=0): OK
+
+  Record 1146 (pH=7.22, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1147 (pH=7.10, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration) SPEC3-VIOLATED(flip_rate=100%)
+
+  Record 1148 (pH=7.32, true=0): OK
+
+  Record 1149 (pH=7.26, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1150 (pH=7.31, true=0): OK
+
+  Record 1151 (pH=7.20, true=0): SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1152 (pH=7.23, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1153 (pH=7.29, true=0): OK
+
+  Record 1154 (pH=7.18, true=0): OK
+
+  Record 1155 (pH=7.34, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1156 (pH=7.03, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1157 (pH=7.11, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration) SPEC3-VIOLATED(flip_rate=100%)
+
+  Record 1158 (pH=6.87, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration) SPEC3-VIOLATED(flip_rate=100%)
+
+  Record 1159 (pH=7.26, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1160 (pH=7.16, true=0): SPEC2-VIOLATED(add_deceleration)
+
+  Record 1161 (pH=7.12, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1162 (pH=7.35, true=0): OK
+
+  Record 1163 (pH=7.24, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1164 (pH=7.05, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration) SPEC3-VIOLATED(flip_rate=100%)
+
+  Record 1165 (pH=7.38, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1166 (pH=7.26, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1167 (pH=7.36, true=0): OK
+
+  Record 1168 (pH=7.39, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1169 (pH=7.23, true=0): OK
+
+  Record 1170 (pH=7.21, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1171 (pH=7.19, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1172 (pH=7.12, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1173 (pH=7.22, true=0): OK
+
+  Record 1174 (pH=7.25, true=0): OK
+
+  Record 1175 (pH=7.24, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1176 (pH=7.22, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1177 (pH=7.26, true=0): SPEC2-VIOLATED(add_deceleration)
+
+  Record 1178 (pH=7.20, true=0): OK
+
+  Record 1179 (pH=7.35, true=0): SPEC1-VIOLATED SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1180 (pH=7.07, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1181 (pH=7.20, true=0): SPEC2-VIOLATED(add_deceleration)
+
+  Record 1182 (pH=7.27, true=0): SPEC1-VIOLATED SPEC2-VIOLATED(decrease_variability)
+
+  Record 1183 (pH=7.28, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1184 (pH=7.26, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1185 (pH=7.12, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1186 (pH=7.27, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1187 (pH=7.08, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1188 (pH=7.19, true=0): SPEC1-VIOLATED
+
+  Record 1189 (pH=7.36, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1190 (pH=7.21, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1191 (pH=7.34, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1192 (pH=7.30, true=0): SPEC1-VIOLATED
+
+  Record 1193 (pH=7.32, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1194 (pH=7.35, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1195 (pH=7.30, true=0): OK
+
+  Record 1196 (pH=7.17, true=0): OK
+
+  Record 1197 (pH=7.13, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1198 (pH=7.03, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1199 (pH=7.02, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC3-VIOLATED(flip_rate=5%)
+
+  Record 1200 (pH=7.25, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1201 (pH=7.29, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1202 (pH=7.13, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1203 (pH=7.34, true=0): OK
+
+  Record 1204 (pH=7.32, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1205 (pH=7.28, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1206 (pH=7.24, true=0): SPEC2-VIOLATED(add_deceleration)
+
+  Record 1207 (pH=7.34, true=0): OK
+
+  Record 1208 (pH=7.23, true=0): OK
+
+  Record 1209 (pH=7.25, true=0): OK
+
+  Record 1210 (pH=7.25, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1211 (pH=6.98, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1212 (pH=7.28, true=0): SPEC1-VIOLATED
+
+  Record 1213 (pH=7.18, true=0): OK
+
+  Record 1214 (pH=7.29, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1215 (pH=6.90, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1216 (pH=7.30, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1217 (pH=7.18, true=0): SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1218 (pH=7.39, true=0): SPEC2-VIOLATED(add_deceleration)
+
+  Record 1219 (pH=7.15, true=0): SPEC2-VIOLATED(add_deceleration)
+
+  Record 1220 (pH=7.30, true=0): OK
+
+  Record 1221 (pH=7.35, true=0): OK
+
+  Record 1222 (pH=7.32, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1223 (pH=7.37, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1224 (pH=7.33, true=0): SPEC1-VIOLATED
+
+  Record 1225 (pH=7.28, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1226 (pH=7.42, true=0): OK
+
+  Record 1227 (pH=7.31, true=0): SPEC2-VIOLATED(add_deceleration)
+
+  Record 1228 (pH=7.20, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1229 (pH=7.13, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration) SPEC3-VIOLATED(flip_rate=100%)
+
+  Record 1230 (pH=7.37, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1231 (pH=7.28, true=0): OK
+
+  Record 1232 (pH=7.23, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1233 (pH=7.36, true=0): OK
+
+  Record 1234 (pH=7.29, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1235 (pH=7.21, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1236 (pH=7.27, true=0): OK
+
+  Record 1237 (pH=7.28, true=0): OK
+
+  Record 1238 (pH=7.23, true=0): OK
+
+  Record 1239 (pH=7.12, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1240 (pH=7.32, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1241 (pH=6.99, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1242 (pH=7.27, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1243 (pH=7.24, true=0): OK
+
+  Record 1244 (pH=7.06, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1245 (pH=7.12, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1246 (pH=7.38, true=0): SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1247 (pH=7.32, true=0): OK
+
+  Record 1248 (pH=7.33, true=0): SPEC2-VIOLATED(add_deceleration)
+
+  Record 1249 (pH=7.15, true=0): OK
+
+  Record 1250 (pH=7.28, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1251 (pH=7.25, true=0): SPEC1-VIOLATED
+
+  Record 1252 (pH=7.25, true=0): OK
+
+  Record 1253 (pH=7.32, true=0): OK
+
+  Record 1254 (pH=7.27, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1255 (pH=7.22, true=0): SPEC2-VIOLATED(add_deceleration)
+
+  Record 1256 (pH=7.32, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1257 (pH=7.28, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1258 (pH=7.17, true=0): SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1259 (pH=7.32, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1260 (pH=7.31, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1261 (pH=7.39, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1262 (pH=7.21, true=0): OK
+
+  Record 1263 (pH=7.21, true=0): SPEC2-VIOLATED(add_deceleration)
+
+  Record 1264 (pH=7.35, true=0): SPEC1-VIOLATED SPEC2-VIOLATED(decrease_variability)
+
+  Record 1265 (pH=7.21, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1266 (pH=7.23, true=0): OK
+
+  Record 1267 (pH=7.16, true=0): OK
+
+  Record 1268 (pH=7.34, true=0): OK
+
+  Record 1269 (pH=7.32, true=0): OK
+
+  Record 1270 (pH=7.18, true=0): OK
+
+  Record 1271 (pH=7.31, true=0): SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1272 (pH=7.24, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1273 (pH=7.34, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1274 (pH=7.15, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1275 (pH=7.20, true=0): SPEC2-VIOLATED(add_deceleration)
+
+  Record 1276 (pH=7.32, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1277 (pH=7.34, true=0): SPEC2-VIOLATED(add_deceleration)
+
+  Record 1278 (pH=7.18, true=0): SPEC1-VIOLATED SPEC2-VIOLATED(decrease_variability)
+
+  Record 1279 (pH=7.31, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1280 (pH=7.29, true=0): OK
+
+  Record 1281 (pH=7.35, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1282 (pH=7.32, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1283 (pH=7.20, true=0): OK
+
+  Record 1284 (pH=7.16, true=0): SPEC2-VIOLATED(add_deceleration)
+
+  Record 1285 (pH=7.35, true=0): OK
+
+  Record 1286 (pH=7.14, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1287 (pH=7.19, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1288 (pH=7.19, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1289 (pH=7.20, true=0): OK
+
+  Record 1290 (pH=7.36, true=0): OK
+
+  Record 1291 (pH=6.93, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC3-VIOLATED(flip_rate=30%)
+
+  Record 1292 (pH=7.28, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1293 (pH=7.41, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1294 (pH=7.30, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1295 (pH=7.30, true=0): OK
+
+  Record 1296 (pH=7.20, true=0): SPEC2-VIOLATED(add_deceleration)
+
+  Record 1297 (pH=7.29, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1298 (pH=7.26, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1299 (pH=7.22, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1300 (pH=7.35, true=0): SPEC2-VIOLATED(add_deceleration)
+
+  Record 1301 (pH=7.37, true=0): OK
+
+  Record 1302 (pH=7.24, true=0): OK
+
+  Record 1303 (pH=7.14, true=1): SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1304 (pH=7.30, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1305 (pH=7.11, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1306 (pH=7.39, true=0): SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1307 (pH=7.26, true=0): OK
+
+  Record 1308 (pH=7.16, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1309 (pH=7.33, true=0): OK
+
+  Record 1310 (pH=7.16, true=0): OK
+
+  Record 1311 (pH=7.22, true=0): SPEC2-VIOLATED(add_deceleration)
+
+  Record 1312 (pH=7.33, true=0): OK
+
+  Record 1313 (pH=7.34, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1314 (pH=7.22, true=0): OK
+
+  Record 1315 (pH=7.19, true=0): SPEC1-VIOLATED SPEC2-VIOLATED(decrease_variability)
+
+  Record 1316 (pH=7.24, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1317 (pH=7.23, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1318 (pH=7.22, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1319 (pH=7.32, true=0): SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1320 (pH=7.22, true=0): OK
+
+  Record 1321 (pH=7.32, true=0): OK
+
+  Record 1322 (pH=7.37, true=0): OK
+
+  Record 1323 (pH=7.35, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1324 (pH=7.29, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1325 (pH=7.08, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1326 (pH=7.29, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1327 (pH=7.31, true=0): OK
+
+  Record 1328 (pH=7.13, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1329 (pH=7.09, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1330 (pH=7.19, true=0): OK
+
+  Record 1331 (pH=7.41, true=0): OK
+
+  Record 1332 (pH=7.27, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1333 (pH=7.24, true=0): SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1334 (pH=7.32, true=0): OK
+
+  Record 1335 (pH=7.26, true=0): OK
+
+  Record 1336 (pH=7.31, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1337 (pH=7.23, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1338 (pH=7.26, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1339 (pH=7.31, true=0): OK
+
+  Record 1340 (pH=7.32, true=0): SPEC2-VIOLATED(add_deceleration)
+
+  Record 1341 (pH=7.14, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1342 (pH=7.23, true=0): SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1343 (pH=7.27, true=0): OK
+
+  Record 1344 (pH=7.24, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1345 (pH=7.41, true=0): OK
+
+  Record 1346 (pH=7.31, true=0): OK
+
+  Record 1347 (pH=7.14, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1348 (pH=7.11, true=1): SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1349 (pH=7.32, true=0): OK
+
+  Record 1350 (pH=7.18, true=0): SPEC1-VIOLATED SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1351 (pH=7.15, true=0): OK
+
+  Record 1352 (pH=7.18, true=0): OK
+
+  Record 1353 (pH=7.20, true=0): OK
+
+  Record 1354 (pH=7.28, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1355 (pH=7.27, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1356 (pH=7.44, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1357 (pH=7.21, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1358 (pH=7.14, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1359 (pH=6.95, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1360 (pH=7.16, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1361 (pH=7.02, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1362 (pH=7.43, true=0): OK
+
+  Record 1363 (pH=7.25, true=0): OK
+
+  Record 1364 (pH=7.32, true=0): SPEC1-VIOLATED
+
+  Record 1365 (pH=7.39, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1366 (pH=7.30, true=0): SPEC2-VIOLATED(add_deceleration)
+
+  Record 1367 (pH=7.37, true=0): OK
+
+  Record 1368 (pH=7.21, true=0): OK
+
+  Record 1369 (pH=7.30, true=0): OK
+
+  Record 1370 (pH=7.03, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration) SPEC3-VIOLATED(flip_rate=100%)
+
+  Record 1371 (pH=7.18, true=0): OK
+
+  Record 1372 (pH=7.29, true=0): OK
+
+  Record 1373 (pH=7.03, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1374 (pH=7.19, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1375 (pH=7.25, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1376 (pH=7.16, true=0): OK
+
+  Record 1377 (pH=7.26, true=0): OK
+
+  Record 1378 (pH=7.30, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1379 (pH=7.27, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1380 (pH=7.26, true=0): OK
+
+  Record 1381 (pH=7.21, true=0): OK
+
+  Record 1382 (pH=7.13, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1383 (pH=7.47, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1384 (pH=7.24, true=0): OK
+
+  Record 1385 (pH=7.23, true=0): OK
+
+  Record 1386 (pH=7.37, true=0): SPEC1-VIOLATED SPEC2-VIOLATED(decrease_variability)
+
+  Record 1387 (pH=7.28, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1388 (pH=7.32, true=0): OK
+
+  Record 1389 (pH=7.24, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1390 (pH=7.27, true=0): SPEC1-VIOLATED
+
+  Record 1391 (pH=7.21, true=0): OK
+
+  Record 1392 (pH=7.26, true=0): SPEC1-VIOLATED SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1393 (pH=7.36, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1394 (pH=7.20, true=0): OK
+
+  Record 1395 (pH=7.32, true=0): OK
+
+  Record 1396 (pH=7.29, true=0): OK
+
+  Record 1397 (pH=7.24, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1398 (pH=7.12, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1399 (pH=7.28, true=0): OK
+
+  Record 1400 (pH=7.13, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1401 (pH=7.16, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1402 (pH=7.30, true=0): OK
+
+  Record 1403 (pH=7.20, true=0): OK
+
+  Record 1404 (pH=7.18, true=0): OK
+
+  Record 1405 (pH=7.23, true=0): OK
+
+  Record 1406 (pH=7.07, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration) SPEC3-VIOLATED(flip_rate=100%)
+
+  Record 1407 (pH=7.26, true=0): OK
+
+  Record 1408 (pH=7.28, true=0): SPEC1-VIOLATED
+
+  Record 1409 (pH=7.21, true=0): OK
+
+  Record 1410 (pH=7.13, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1411 (pH=7.32, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1412 (pH=7.20, true=0): OK
+
+  Record 1413 (pH=7.29, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1414 (pH=7.35, true=0): SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1415 (pH=7.40, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1416 (pH=7.19, true=0): OK
+
+  Record 1417 (pH=7.26, true=0): OK
+
+  Record 1418 (pH=6.98, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1419 (pH=7.02, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1420 (pH=7.30, true=0): OK
+
+  Record 1421 (pH=7.29, true=0): OK
+
+  Record 1422 (pH=7.23, true=0): OK
+
+  Record 1423 (pH=7.33, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1424 (pH=7.18, true=0): OK
+
+  Record 1425 (pH=7.03, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1426 (pH=7.13, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1427 (pH=7.37, true=0): SPEC2-VIOLATED(add_deceleration)
+
+  Record 1428 (pH=7.34, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1429 (pH=7.24, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1430 (pH=7.19, true=0): OK
+
+  Record 1431 (pH=7.29, true=0): SPEC2-VIOLATED(add_deceleration)
+
+  Record 1432 (pH=7.34, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1433 (pH=7.34, true=0): OK
+
+  Record 1434 (pH=7.26, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1435 (pH=7.16, true=0): OK
+
+  Record 1436 (pH=7.38, true=0): OK
+
+  Record 1437 (pH=7.17, true=0): OK
+
+  Record 1438 (pH=7.14, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1439 (pH=7.30, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1440 (pH=7.36, true=0): OK
+
+  Record 1441 (pH=7.23, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1442 (pH=7.28, true=0): OK
+
+  Record 1443 (pH=7.16, true=0): OK
+
+  Record 1444 (pH=7.38, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1445 (pH=7.36, true=0): OK
+
+  Record 1446 (pH=7.36, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1447 (pH=7.14, true=1): SPEC1-VIOLATED SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1448 (pH=7.24, true=0): OK
+
+  Record 1449 (pH=7.29, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1450 (pH=7.27, true=0): SPEC1-VIOLATED
+
+  Record 1451 (pH=7.05, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1452 (pH=7.10, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1453 (pH=7.25, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1454 (pH=7.23, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1455 (pH=7.05, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1456 (pH=7.27, true=0): OK
+
+  Record 1457 (pH=7.18, true=0): OK
+
+  Record 1458 (pH=7.24, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1459 (pH=7.28, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1460 (pH=7.26, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1461 (pH=7.32, true=0): OK
+
+  Record 1462 (pH=7.25, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1463 (pH=7.23, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1464 (pH=7.26, true=0): OK
+
+  Record 1465 (pH=7.26, true=0): OK
+
+  Record 1466 (pH=7.10, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1467 (pH=7.16, true=0): OK
+
+  Record 1468 (pH=7.11, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1469 (pH=7.39, true=0): OK
+
+  Record 1470 (pH=7.09, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1471 (pH=7.18, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1472 (pH=7.14, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1473 (pH=7.22, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1474 (pH=7.27, true=0): OK
+
+  Record 1475 (pH=7.18, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1476 (pH=7.26, true=0): SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1477 (pH=7.17, true=0): OK
+
+  Record 1478 (pH=7.27, true=0): OK
+
+  Record 1479 (pH=7.24, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1480 (pH=7.13, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1481 (pH=7.29, true=0): OK
+
+  Record 1482 (pH=7.22, true=0): OK
+
+  Record 1483 (pH=7.25, true=0): OK
+
+  Record 1484 (pH=7.21, true=0): SPEC2-VIOLATED(add_deceleration)
+
+  Record 1485 (pH=7.16, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1486 (pH=7.19, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1487 (pH=7.14, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1488 (pH=7.14, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1489 (pH=7.27, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1490 (pH=6.93, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1491 (pH=7.16, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1492 (pH=7.30, true=0): OK
+
+  Record 1493 (pH=7.26, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1494 (pH=7.10, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1495 (pH=7.03, true=1): SPEC1-VIOLATED SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1496 (pH=7.25, true=0): OK
+
+  Record 1497 (pH=7.28, true=0): SPEC2-VIOLATED(add_deceleration)
+
+  Record 1498 (pH=7.40, true=0): OK
+
+  Record 1499 (pH=7.24, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+  Record 1500 (pH=7.34, true=0): OK
+
+  Record 1501 (pH=7.16, true=0): SPEC2-VIOLATED(increase_tachycardia)
+
+  Record 1502 (pH=7.26, true=0): OK
+
+  Record 1503 (pH=7.31, true=0): OK
+
+  Record 1504 (pH=7.28, true=0): SPEC2-VIOLATED(decrease_variability)
+
+  Record 1505 (pH=7.24, true=0): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability) SPEC2-VIOLATED(add_deceleration)
+
+  Record 1506 (pH=7.12, true=1): SPEC2-VIOLATED(increase_tachycardia) SPEC2-VIOLATED(decrease_variability)
+
+──────────────────────────────────────────────────────────────────────
+REAL DATA SEARCH SUMMARY
+──────────────────────────────────────────────────────────────────────
+Records checked: 506
+Spec 1 (tachycardia+low var) violations: 25
+Spec 2 (monotonicity) violations:        551
+Spec 3 (noise robustness) violations:    11
+
+======================================================================
+APPROACH 2: Perturbation-based falsification
+======================================================================
+
+  Record 1003 (pH=7.20, p=0.150): robust (mag=3.9)
+
+  Record 1004 (pH=7.30, p=0.149): robust (mag=4.5)
+
+  Record 1005 (pH=7.30, p=0.218): robust (mag=2.5)
+
+  Record 1006 (pH=7.23, p=0.083): robust (mag=7.9)
+
+  Record 1007 (pH=7.16, p=0.095): robust (mag=10.1)
+
+  Record 1008 (pH=7.36, p=0.119): robust (mag=4.5)
+
+  Record 1009 (pH=7.18, p=0.119): robust (mag=3.7)
+
+  Record 1010 (pH=7.35, p=0.063): robust (mag=2.7)
+
+  Record 1011 (pH=7.37, p=0.199): FLIPPED! (dbaseline=-0.7, var_scale=1.30, noise=0.7, prob: 0.199 -> 0.534)
+
+  Record 1012 (pH=7.36, p=0.197): robust (mag=4.7)
+
+  Record 1013 (pH=7.22, p=0.238): robust (mag=3.8)
+
+  Record 1015 (pH=7.20, p=0.161): robust (mag=7.6)
+
+  Record 1016 (pH=7.32, p=0.080): robust (mag=13.0)
+
+  Record 1019 (pH=7.15, p=0.148): robust (mag=4.3)
+
+  Record 1020 (pH=7.37, p=0.013): robust (mag=5.4)
+
+  Record 1021 (pH=7.21, p=0.093): robust (mag=6.6)
+
+  Record 1022 (pH=7.28, p=0.167): FLIPPED! (dbaseline=+2.2, var_scale=1.47, noise=0.0, prob: 0.167 -> 0.504)
+
+  Record 1023 (pH=7.30, p=0.132): robust (mag=10.4)
+
+  Record 1024 (pH=7.43, p=0.052): robust (mag=10.8)
+
+  Record 1025 (pH=7.34, p=0.100): robust (mag=2.6)
+
+  Record 1026 (pH=7.27, p=0.130): robust (mag=9.8)
+
+  Record 1027 (pH=7.33, p=0.086): robust (mag=5.2)
+
+  Record 1028 (pH=7.25, p=0.144): FLIPPED! (dbaseline=-3.1, var_scale=1.16, noise=0.0, prob: 0.144 -> 0.510)
+
+  Record 1030 (pH=7.16, p=0.089): FLIPPED! (dbaseline=-2.8, var_scale=1.47, noise=0.2, prob: 0.089 -> 0.527)
+
+  Record 1031 (pH=7.31, p=0.077): robust (mag=3.1)
+
+  Record 1032 (pH=7.30, p=0.153): robust (mag=11.4)
+
+  Record 1033 (pH=7.32, p=0.111): robust (mag=7.0)
+
+  Record 1034 (pH=7.23, p=0.062): robust (mag=10.4)
+
+  Record 1035 (pH=7.28, p=0.172): robust (mag=2.7)
+
+  Record 1038 (pH=7.33, p=0.109): robust (mag=8.3)
+
+  Record 1039 (pH=7.11, p=0.556): FLIPPED! (dbaseline=-1.7, var_scale=0.67, noise=0.8, prob: 0.556 -> 0.083)
+
+  Record 1040 (pH=7.17, p=0.203): FLIPPED! (dbaseline=+3.3, var_scale=1.27, noise=0.1, prob: 0.203 -> 0.628)
+
+  Record 1043 (pH=7.27, p=0.091): robust (mag=1.2)
+
+  Record 1045 (pH=7.26, p=0.184): FLIPPED! (dbaseline=+8.0, var_scale=1.23, noise=0.2, prob: 0.184 -> 0.564)
+
+  Record 1046 (pH=7.29, p=0.170): robust (mag=4.9)
+
+  Record 1047 (pH=7.19, p=0.162): FLIPPED! (dbaseline=+1.0, var_scale=1.31, noise=0.0, prob: 0.162 -> 0.546)
+
+  Record 1048 (pH=7.20, p=0.217): FLIPPED! (dbaseline=-5.7, var_scale=1.08, noise=0.1, prob: 0.217 -> 0.546)
+
+  Record 1049 (pH=7.24, p=0.103): robust (mag=2.0)
+
+  Record 1050 (pH=7.29, p=0.234): robust (mag=7.1)
+
+  Record 1051 (pH=7.25, p=0.053): robust (mag=2.7)
+
+  Record 1052 (pH=7.18, p=0.088): robust (mag=7.7)
+
+  Record 1053 (pH=7.35, p=0.053): robust (mag=2.5)
+
+  Record 1054 (pH=7.19, p=0.144): robust (mag=5.8)
+
+  Record 1055 (pH=7.28, p=0.048): robust (mag=5.9)
+
+  Record 1056 (pH=7.32, p=0.051): robust (mag=15.3)
+
+  Record 1057 (pH=7.27, p=0.097): robust (mag=7.2)
+
+  Record 1059 (pH=7.15, p=0.108): robust (mag=11.0)
+
+  Record 1060 (pH=7.36, p=0.097): robust (mag=1.8)
+
+  Record 1061 (pH=7.22, p=0.265): robust (mag=4.5)
+
+  Record 1063 (pH=7.16, p=0.071): robust (mag=9.6)
+
+──────────────────────────────────────────────────────────────────────
+PERTURBATION FALSIFICATION SUMMARY
+──────────────────────────────────────────────────────────────────────
+Records tested: 50
+Successfully flipped: 9 (18%)
+Mean perturbation magnitude for flips: 4.75
+Min perturbation magnitude for flip: 3.11
+Saved perturbation analysis to /Users/namiecake/Desktop/cs238v/CS238V-project/plots/perturbation_analysis_rf_ph715.png
+
+======================================================================
+FALSIFICATION COMPLETE — RandomForest (pH < 7.15)
+Results saved to /Users/namiecake/Desktop/cs238v/CS238V-project/results/
+Plots saved to /Users/namiecake/Desktop/cs238v/CS238V-project/plots/
+======================================================================
+
+======================================================================
+  /Users/namiecake/Desktop/cs238v/CS238V-project/.venv/bin/python /Users/namiecake/Desktop/cs238v/CS238V-project/falsification.py cnn --ph-threshold 7.15
+======================================================================
+
+Loading cached data from /Users/namiecake/Desktop/cs238v/CS238V-project/data/ctg_features_ph715.pkl
+Loading cached raw signals from /Users/namiecake/Desktop/cs238v/CS238V-project/data/ctg_raw_signals.pkl
+Loading CNN classifier...
+Traceback (most recent call last):
+  File "/Users/namiecake/Desktop/cs238v/CS238V-project/falsification.py", line 559, in <module>
+    main(classifier=args.classifier, ph_threshold=args.ph_threshold)
+  File "/Users/namiecake/Desktop/cs238v/CS238V-project/falsification.py", line 489, in main
+    cnn_predictor = load_cnn_model(suffix)
+                    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/namiecake/Desktop/cs238v/CS238V-project/falsification.py", line 63, in load_cnn_model
+    bundle = torch.load(path, map_location="cpu", weights_only=False)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/namiecake/Desktop/cs238v/CS238V-project/.venv/lib/python3.12/site-packages/torch/serialization.py", line 1549, in load
+    return _load(
+           ^^^^^^
+  File "/Users/namiecake/Desktop/cs238v/CS238V-project/.venv/lib/python3.12/site-packages/torch/serialization.py", line 2143, in _load
+    result = unpickler.load()
+             ^^^^^^^^^^^^^^^^
+  File "/Users/namiecake/Desktop/cs238v/CS238V-project/.venv/lib/python3.12/site-packages/torch/serialization.py", line 2132, in find_class
+    return super().find_class(mod_name, name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: Can't get attribute 'CTG_CNN' on <module '__main__' from '/Users/namiecake/Desktop/cs238v/CS238V-project/falsification.py'>
+
+ERROR: falsification.py exited with code 1
