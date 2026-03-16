@@ -1,13 +1,15 @@
 """
 run_all.py — Run the full CTG validation pipeline for both pH thresholds.
 
-Executes each step sequentially:
-  1. load_data.py      — download/cache features and raw signals
-  2. rf_classifier.py   — train Random Forest
-  3. cnn_classifier.py  — train 1D CNN
-  4. falsification.py rf  — falsify RF
-  5. falsification.py cnn — falsify CNN
-  6. compare_results.py  — generate comparison tables and plots
+Executes each step sequentially for RF, CNN, and LSTM classifiers:
+  1. load_data.py           — download/cache features and raw signals
+  2. rf_classifier.py       — train Random Forest
+  3. cnn_classifier.py      — train 1D CNN
+  4. lstm_classifier.py     — train LSTM
+  5. falsification.py rf    — falsify RF
+  6. falsification.py cnn   — falsify CNN
+  7. falsification.py lstm  — falsify LSTM
+  8. compare_results.py     — generate comparison tables and plots
 
 Usage:
     python run_all.py
@@ -22,12 +24,15 @@ PYTHON = sys.executable
 
 THRESHOLDS = [7.15, 7.05]
 
+# (script, extra positional args)
 STEPS = [
-    ("load_data.py", []),
-    ("rf_classifier.py", []),
-    ("cnn_classifier.py", []),
-    ("falsification.py", ["rf"]),
-    ("falsification.py", ["cnn"]),
+    ("load_data.py",       []),
+    ("rf_classifier.py",   []),
+    ("cnn_classifier.py",  []),
+    ("lstm_classifier.py", []),
+    ("falsification.py",   ["rf"]),
+    ("falsification.py",   ["cnn"]),
+    ("falsification.py",   ["lstm"]),
 ]
 
 
@@ -39,7 +44,7 @@ def run(script: str, extra_args: list[str], threshold: float):
         "--ph-threshold",
         str(threshold),
     ]
-    header = f"{'=' * 70}"
+    header = "=" * 70
     print(f"\n{header}")
     print(f"  {' '.join(cmd)}")
     print(f"{header}\n")
